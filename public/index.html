@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Handoff Lab — a work-item pipeline where every stage has one owning layer. Remove a layer and watch where the queue forms.">
+  <title>Handoff Lab — boring AI stack simulator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+<!-- pb-shell --><link rel="stylesheet" href="./pb-shell.css"><!-- pb-shell -->
+<!-- pb-back --><link rel="stylesheet" href="./pb-back.css"><!-- pb-back --></head>
+<body>
+<a class="skip-link" href="#main">Skip to the lab</a>
+<main id="main" tabindex="-1">
+  <nav aria-label="Primary"><a aria-current="page" href="/">Lab</a><a href="/guide.html">Guide</a><a href="https://github.com/anhquanbd2021/boring-ai-stack">Source</a></nav>
+  <header class="hero">
+    <div><p class="eyebrow">Handoff Lab · one job per tool</p><h1>Remove a layer. Watch where the queue forms.</h1><p class="lede">A work item travels <code>idea → context → build → review → ship → learn</code>, and each stage has exactly one owning layer: workspace, orchestrator, builder, governor. Toggle a layer off and the stall lands precisely where its job was.</p></div>
+    <p class="warning"><strong>Safe educational demo.</strong> A teaching model of a personal AI-work pipeline — no real agents, tools, or credentials; everything runs in your browser.</p>
+  </header>
+
+  <section class="workspace" aria-label="Pipeline controls and board">
+    <section class="panel controls" aria-labelledby="controls-title">
+      <div><p class="eyebrow">Controls</p><h2 id="controls-title">Stack configuration</h2></div>
+      <label for="scenario">Scenario<span class="select-wrap"><select id="scenario"></select></span></label>
+
+      <fieldset class="layers">
+        <legend>Layers — one job each</legend>
+        <label><input type="checkbox" id="layer-workspace" checked> <strong>workspace</strong> — owns <code>idea</code></label>
+        <label><input type="checkbox" id="layer-orchestrator" checked> <strong>orchestrator</strong> — owns <code>context</code> + <code>learn</code></label>
+        <label><input type="checkbox" id="layer-builder" checked> <strong>builder</strong> — owns <code>build</code></label>
+        <label><input type="checkbox" id="layer-governor" checked> <strong>governor</strong> — owns <code>review</code> + <code>ship</code></label>
+      </fieldset>
+
+      <label for="governor-bypass">With no governor<small>stall = work waits for review · untracked = ships with no record</small><span class="select-wrap"><select id="governor-bypass"><option value="stall">items stall at review</option><option value="untracked">items ship untracked</option></select></span></label>
+
+      <button id="submit" type="button">Submit an idea</button>
+      <button id="tick" type="button">Tick once</button>
+      <button id="run" type="button">Run until settled</button>
+      <button id="recover" type="button">Recover first item</button>
+      <button id="reset" type="button" class="secondary">Reset</button>
+      <p class="muted">Toggle a layer mid-run: stalls clear the moment an owner returns — that's what "owning a stage" means.</p>
+    </section>
+
+    <section class="panel visualizer" aria-labelledby="board-title">
+      <div class="section-heading"><div><p class="eyebrow">Board</p><h2 id="board-title">Six stages, four owners</h2></div><span id="tick-badge" class="badge" role="status" aria-live="polite">tick 0</span></div>
+      <div id="board" class="board" aria-label="Work items by stage" tabindex="0"></div>
+      <dl id="stats" class="stats" aria-label="Pipeline report"></dl>
+    </section>
+  </section>
+
+  <section class="workspace" aria-label="Event log">
+    <section class="panel log-panel" aria-labelledby="log-title">
+      <div><p class="eyebrow">Handoff log</p><h2 id="log-title">What crossed each boundary</h2></div>
+      <ol id="log" class="log" aria-label="Pipeline events" tabindex="0"></ol>
+    </section>
+  </section>
+
+  <p class="footer-line"><a href="/guide.html">Read the stage-by-stage guide</a> · <a href="https://github.com/anhquanbd2021/boring-ai-stack">Inspect source and tests</a></p>
+</main>
+<script type="module" src="/app.js"></script>
+<!-- pb-shell --><a class="pb-shell" href="https://github.com/anhquanbd2021/boring-ai-stack" title="boring-ai-stack — an Article Playbook demo (view source)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="#2dd4bf"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="#2dd4bf"/></svg><b>boring-ai-stack</b><i>DEMO</i></a><!-- pb-shell --><!-- pb-back --><a class="pb-back" id="pb-back" href="https://github.com/anhquanbd2021/boring-ai-stack" title="Back to the article — boring-ai-stack">← Article <i>PLAYBOOK</i></a><script>(function(){var a=document.getElementById('pb-back');if(!a)return;var h=location.hostname;if(/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(h)){a.href='//'+h+':'+(/^(localhost|127\.0\.0\.1)$/.test(h)?'1234':'30082')+'/microsites/article.html?slug=boring-ai-stack';}})();</script><!-- pb-back --></body>
+</html>

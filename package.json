@@ -1,0 +1,16 @@
+{
+  "name": "boring-ai-stack-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Handoff Lab — run work items through a six-stage pipeline where each stage has one owning layer, then remove a layer and watch where the queue forms.",
+  "scripts": {
+    "start": "node app/server.js",
+    "report": "node scripts/pipeline-report.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "npm test && npm run report"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

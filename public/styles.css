@@ -1,0 +1,1074 @@
+/* ==========================================================================
+   Handoff Lab — "Ink & Circuit" redesign
+   Article Playbook house style: flat ink surfaces, 1px hairlines, monospace
+   part-labels, a single teal accent. Dark is the default scheme; the light
+   theme remaps the same tokens under prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+
+:root {
+  color-scheme: dark light;
+
+  /* spacing — 4px base unit, nothing outside this scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-14: 56px;
+  --sp-18: 72px;
+
+  /* surfaces */
+  --bg: #0B1118;
+  --bg-sunken: #0E1620;
+  --surface: #131E29;
+  --surface-raised: #182634;
+  --border: #26404F;
+  --border-strong: #3A5A70;
+
+  /* ink */
+  --ink: #E8F1F5;
+  --ink-2: #AFC4D0;
+  --ink-3: #7E96A6;
+
+  /* semantic — color is signal, never decoration */
+  --accent: #2DD4BF;
+  --accent-ink: #04211D;
+  --accent-weak: #15302D;
+  --warn: #F0B23E;
+  --warn-ink: #241703;
+  --warn-weak: #261F10;
+  --danger: #E06868;
+  --danger-weak: #2A161A;
+  --ok: #43B581;
+  --ok-weak: #142820;
+  --focus: #5EEAD4;
+
+  /* owner part-labels: chip bg / fg / border */
+  --ow-workspace-bg: #123332;
+  --ow-workspace-fg: #8FE3D6;
+  --ow-workspace-bd: #2DD4BF59;
+  --ow-orchestrator-bg: #2B2516;
+  --ow-orchestrator-fg: #E5C66B;
+  --ow-orchestrator-bd: #D9A62E59;
+  --ow-builder-bg: #16281F;
+  --ow-builder-fg: #7BD8A8;
+  --ow-builder-bd: #43B58159;
+  --ow-governor-bg: #1B2940;
+  --ow-governor-fg: #95BCE4;
+  --ow-governor-bd: #6B9BD159;
+
+  /* typography */
+  --font-ui: "Inter", system-ui, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-display: clamp(2.5rem, 5.5vw + 1rem, 4rem);
+
+  /* radius */
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-3: 12px;
+  --r-4: 16px;
+  --r-pill: 999px;
+
+  /* elevation — restrained; borders do most of the work */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / .45);
+  --shadow-2: 0 10px 28px rgb(0 0 0 / .38);
+
+  /* motion */
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --ease-standard: cubic-bezier(.2, .7, .3, 1);
+  --ease-emph: cubic-bezier(.3, 1.25, .4, 1);
+  --ease-in: cubic-bezier(.55, .06, .68, .19);
+
+  /* z-index — pb-shell's 2147483000 is owned by pb-shell.css */
+  --z-board-scroll: 10;
+  --z-nav: 20;
+}
+
+/* light theme — "paper" remap of the same token names */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F4F1EA;
+    --bg-sunken: #ECE8DD;
+    --surface: #FDFCF8;
+    --surface-raised: #FFFFFF;
+    --border: #D8D2C3;
+    --border-strong: #B4AC98;
+
+    --ink: #16212C;
+    --ink-2: #3D4F5D;
+    --ink-3: #5F7280;
+
+    --accent: #0B7D6E;
+    --accent-ink: #FFFFFF;
+    --accent-weak: #DCEEE9;
+    --warn: #9A6209;
+    --warn-ink: #FFFFFF;
+    --warn-weak: #F3E5C2;
+    --danger: #B23A3A;
+    --danger-weak: #F4DCDC;
+    --ok: #1E7A4C;
+    --ok-weak: #DEEDE2;
+    --focus: #0B7D6E;
+
+    --ow-workspace-bg: #D6EAE5;
+    --ow-workspace-fg: #0B5B50;
+    --ow-workspace-bd: #7FBEB2;
+    --ow-orchestrator-bg: #EFE4C4;
+    --ow-orchestrator-fg: #7A5510;
+    --ow-orchestrator-bd: #CBAE62;
+    --ow-builder-bg: #DCEBDD;
+    --ow-builder-fg: #22603D;
+    --ow-builder-bd: #8FBF9E;
+    --ow-governor-bg: #DCE6F2;
+    --ow-governor-fg: #2C4E78;
+    --ow-governor-bd: #93ACCB;
+
+    --shadow-1: 0 1px 2px rgb(22 33 44 / .10);
+    --shadow-2: 0 10px 28px rgb(22 33 44 / .14);
+  }
+}
+
+/* ---------- 2. Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-display);
+  line-height: 1.05;
+  color: var(--ink);
+  max-width: 14ch;
+  margin: 0 0 var(--sp-4);
+  text-wrap: balance;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-xl);
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0;
+}
+
+h3 {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 var(--sp-2);
+}
+
+p {
+  margin: 0 0 var(--sp-4);
+}
+
+p:last-child,
+ul:last-child,
+dl:last-child {
+  margin-bottom: 0;
+}
+
+ul {
+  margin: 0 0 var(--sp-4);
+  padding-inline-start: var(--sp-6);
+  color: var(--ink-2);
+}
+
+ul > li + li {
+  margin-top: var(--sp-1);
+}
+
+li::marker {
+  color: var(--ink-3);
+}
+
+dl,
+dd {
+  margin: 0;
+}
+
+/* inline code — part-label chip, used everywhere */
+code {
+  font-family: var(--font-mono);
+  font-size: .9em;
+  line-height: 1.5;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  padding: .1em .4em;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+a:hover {
+  color: color-mix(in srgb, var(--accent) 75%, var(--ink));
+  border-bottom-color: var(--accent);
+}
+
+/* focus — 2px ring, 2px offset, on every interactive element */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* shared transition list — color swaps at dur-1, transforms/shadows at dur-2.
+   #board descendants are deliberately excluded: render() rebuilds lanes each
+   tick, so state changes there are expressed by static styling only. */
+a,
+button,
+select,
+.layers label,
+.layers input[type="checkbox"] {
+  transition:
+    color var(--dur-1) var(--ease-standard),
+    background-color var(--dur-1) var(--ease-standard),
+    border-color var(--dur-1) var(--ease-standard),
+    transform var(--dur-2) var(--ease-standard),
+    box-shadow var(--dur-2) var(--ease-standard);
+}
+
+/* ---------- 3. Page frame ---------- */
+
+.skip-link {
+  position: fixed;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  z-index: calc(var(--z-nav) + 1);
+  padding: var(--sp-2) var(--sp-4);
+  border: 0;
+  border-radius: var(--r-2);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  transform: translateY(calc(-100% - var(--sp-6)));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+main {
+  max-width: 1180px;
+  margin-inline: auto;
+  /* bottom reserve clears the fixed pb-shell pill — never under 72px */
+  padding: var(--sp-8) var(--sp-6) var(--sp-18);
+}
+
+main:focus {
+  outline: none;
+}
+
+/* ---------- 4. Nav pills ---------- */
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 56px;
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-8);
+}
+
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 7px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+nav a:hover {
+  color: var(--ink);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+nav a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+nav a[href^="http"]::after {
+  content: " ↗";
+  font-family: var(--font-mono);
+}
+
+/* ---------- 5. Hero ---------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(280px, 4fr);
+  gap: var(--sp-8);
+  align-items: end;
+  margin-bottom: var(--sp-14);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--accent);
+  margin: 0 0 var(--sp-1);
+}
+
+.hero .eyebrow {
+  margin-bottom: var(--sp-2);
+}
+
+.lede {
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--ink-2);
+  max-width: 68ch;
+  margin: 0;
+}
+
+.warning {
+  border-left: 3px solid var(--warn);
+  background: color-mix(in srgb, var(--warn-weak) 40%, var(--surface));
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 0 var(--r-2) var(--r-2) 0;
+  color: var(--ink-2);
+  max-width: 46ch;
+  margin: 0;
+}
+
+.warning strong {
+  color: var(--ink);
+}
+
+/* ---------- 6. Panels & workspace layout ---------- */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-4);
+  padding: var(--sp-6);
+  box-shadow: var(--shadow-1);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+/* heading groups: first content block begins --sp-4 below */
+.controls > div:first-child,
+.log-panel > div:first-child,
+.panel > h2,
+.guide-section > h2 {
+  margin-bottom: var(--sp-4);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-8);
+}
+
+section[aria-label="Event log"] {
+  margin-bottom: var(--sp-10);
+}
+
+.visualizer {
+  min-width: 0;
+}
+
+.log-panel {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 7. Form controls ---------- */
+
+.controls label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 var(--sp-4);
+}
+
+.controls label small {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--ink-3);
+  margin-top: var(--sp-1);
+  text-transform: none;
+}
+
+.select-wrap {
+  position: relative;
+  display: block;
+  margin-top: var(--sp-2);
+}
+
+.select-wrap::after {
+  content: "▾";
+  position: absolute;
+  right: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--sp-10) 0 var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  background: var(--bg-sunken);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+select:hover {
+  border-color: var(--border-strong);
+}
+
+fieldset.layers {
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--sp-4);
+  margin: 0 0 var(--sp-4);
+  min-width: 0;
+}
+
+.layers legend {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--accent);
+  padding: 0 var(--sp-2);
+}
+
+/* checkbox rows — the whole label row is the ≥44px click target */
+.layers label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-1);
+  min-height: 44px;
+  padding: var(--sp-2);
+  margin: 0 calc(-1 * var(--sp-2));
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  font-size: var(--text-md);
+  font-weight: 400;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.layers label:hover {
+  border-color: var(--border-strong);
+}
+
+.layers strong {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.layers input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--r-1);
+  background: var(--bg-sunken);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+/* check glyph — CSS-drawn stroke, snaps in with --ease-emph */
+.layers input[type="checkbox"]::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  border: 2px solid var(--accent-ink);
+  border-top: 0;
+  border-left: 0;
+  opacity: 0;
+  transform: rotate(45deg) scale(.6);
+  transition:
+    transform 140ms var(--ease-emph),
+    opacity 140ms var(--ease-emph);
+}
+
+.layers input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.layers input[type="checkbox"]:checked::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+/* ---------- 8. Buttons ---------- */
+
+button {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: var(--r-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  margin-top: var(--sp-2);
+  touch-action: manipulation;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+  transition-duration: var(--dur-1);
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--ink-2);
+}
+
+button.secondary:hover {
+  transform: none;
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-1);
+}
+
+.muted {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+p.muted {
+  margin: var(--sp-3) 0 0;
+  max-width: 40ch;
+}
+
+/* ---------- 9. Tick badge ---------- */
+
+.badge {
+  display: inline-block;
+  border-radius: var(--r-pill);
+  padding: var(--sp-1) var(--sp-3);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  background: var(--accent-weak);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* ---------- 10. Board — topology is the hero ---------- */
+
+#board,
+.board {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(118px, 1fr));
+  gap: var(--sp-2);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.lane {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--sp-2);
+  min-height: 148px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  scroll-snap-align: start;
+}
+
+.lane:hover {
+  border-color: var(--border-strong);
+}
+
+.lane-dead {
+  border-color: color-mix(in srgb, var(--danger) 60%, transparent);
+  background: color-mix(in srgb, var(--danger-weak) 50%, var(--bg-sunken));
+}
+
+/* dead lanes dim their contents; .lane-head stays legible for the
+   "— off" suffix emitted by JS */
+.lane-dead > :not(.lane-head) {
+  opacity: .55;
+}
+
+.lane-done {
+  border-color: color-mix(in srgb, var(--ok) 55%, transparent);
+  background: color-mix(in srgb, var(--ok-weak) 40%, var(--bg-sunken));
+}
+
+.lane-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.stage-name {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink);
+}
+
+.owner {
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  padding: 1px var(--sp-2);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  width: fit-content;
+}
+
+.owner-teal {
+  background: var(--ow-workspace-bg);
+  color: var(--ow-workspace-fg);
+  border-color: var(--ow-workspace-bd);
+}
+
+.owner-amber {
+  background: var(--ow-orchestrator-bg);
+  color: var(--ow-orchestrator-fg);
+  border-color: var(--ow-orchestrator-bd);
+}
+
+.owner-green {
+  background: var(--ow-builder-bg);
+  color: var(--ow-builder-fg);
+  border-color: var(--ow-builder-bd);
+}
+
+.owner-navy {
+  background: var(--ow-governor-bg);
+  color: var(--ow-governor-fg);
+  border-color: var(--ow-governor-bd);
+}
+
+.lane-empty {
+  color: var(--ink-3);
+  text-align: center;
+  font-family: var(--font-mono);
+  margin: auto;
+}
+
+/* ---------- 11. Work cards ---------- */
+
+.card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-2);
+  padding: var(--sp-2) var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--ink-2);
+  box-shadow: none;
+}
+
+.card-title {
+  margin: 0 0 var(--sp-1);
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.card-arts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.card-arts code {
+  font-size: var(--text-xs);
+}
+
+.card-stall {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--text-xs);
+}
+
+/* stalled — ▲ glyph + text, never color alone */
+.card-stalled {
+  border-left-color: var(--warn);
+  background: var(--warn-weak);
+}
+
+.card-stalled .card-stall {
+  color: var(--warn);
+}
+
+.card-stalled .card-stall::before {
+  content: "▲ ";
+}
+
+/* untracked — ✕ glyph + text (wins over ▲ on the trailing card-stall when
+   an item is both stalled and untracked) */
+.card-untracked {
+  border-left-color: var(--danger);
+  background: var(--danger-weak);
+}
+
+.card-untracked .card-stall:last-child {
+  color: var(--danger);
+}
+
+.card-untracked .card-stall:last-child::before {
+  content: "✕ ";
+}
+
+/* ---------- 12. Stats ---------- */
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0 0;
+}
+
+.stat {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  padding: var(--sp-2) var(--sp-4);
+  min-width: 92px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat dt,
+.control dt {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-3);
+}
+
+.stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-xl);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 13. Log ---------- */
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--sp-2) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: 340px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.log li {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: var(--r-2);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  /* one-shot entrance — each li is created once and prepended */
+  animation: log-in var(--dur-2) var(--ease-standard) both;
+}
+
+.log li code {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-size: inherit;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.log li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.log li.log-warn {
+  border-left-color: var(--warn);
+  background: var(--warn-weak);
+}
+
+@keyframes log-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 14. Footer line ---------- */
+
+.footer-line {
+  border-top: 1px solid var(--border);
+  padding-top: var(--sp-6);
+  text-align: center;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* ---------- 15. Guide page ---------- */
+
+.try {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.try::after {
+  content: " →";
+}
+
+.guide-section {
+  margin-top: var(--sp-14);
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-4);
+}
+
+.control-number {
+  display: block;
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.control dl {
+  margin: var(--sp-4) 0 0;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.control dd {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--r-3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-3);
+  background: var(--bg-sunken);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+td {
+  font-size: var(--text-sm);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  color: var(--ink-2);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+pre.code-block {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--ink-2);
+  overflow-x: auto;
+  margin: 0 0 var(--sp-4);
+}
+
+/* ---------- 16. Responsive ---------- */
+
+@media (max-width: 1079px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    gap: var(--sp-5);
+  }
+}
+
+@media (max-width: 759px) {
+  main {
+    padding-inline: var(--sp-4);
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: var(--sp-6);
+  }
+}
+
+@media (max-width: 479px) {
+  /* stats fall back to a 2-up grid */
+  .stat {
+    min-width: calc(50% - var(--sp-2));
+  }
+}
+
+/* ---------- 17. Reduced motion — all animation/transition off, ----------
+   state changes still apply instantly */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .log {
+    scroll-behavior: auto;
+  }
+}

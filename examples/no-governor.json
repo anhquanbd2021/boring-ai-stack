@@ -1,0 +1,10 @@
+{
+  "label": "No governor — work ships untracked and cannot be recovered",
+  "layers": { "workspace": true, "orchestrator": true, "builder": true, "governor": false },
+  "governorBypass": "untracked",
+  "items": [
+    "Retry logic for the webhook consumer",
+    "Cache the pricing lookup",
+    "Weekly report generator"
+  ]
+}

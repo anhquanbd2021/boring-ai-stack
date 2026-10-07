@@ -1,0 +1,10 @@
+{
+  "label": "Full stack — every stage has an owner",
+  "layers": { "workspace": true, "orchestrator": true, "builder": true, "governor": true },
+  "governorBypass": "stall",
+  "items": [
+    "Retry logic for the webhook consumer",
+    "Cache the pricing lookup",
+    "Weekly report generator"
+  ]
+}

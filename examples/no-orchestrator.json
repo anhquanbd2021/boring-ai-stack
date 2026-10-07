@@ -1,0 +1,10 @@
+{
+  "label": "No orchestrator — work stalls unrouted after intake",
+  "layers": { "workspace": true, "orchestrator": false, "builder": true, "governor": true },
+  "governorBypass": "stall",
+  "items": [
+    "Retry logic for the webhook consumer",
+    "Cache the pricing lookup",
+    "Weekly report generator"
+  ]
+}
